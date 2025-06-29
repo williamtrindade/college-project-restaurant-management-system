@@ -25,7 +25,7 @@ class RequestController extends Controller
         $clientRequest->total_price = $this->getTotalPrice(collect($request['dishes']));
         $clientRequest->save();
         $clientRequest->dishes()->sync(array_values($request['dishes']));
-        return $clientRequest;
+        return response()->json($clientRequest, 201);
     }
 
     public function getTotalPrice($dishes)

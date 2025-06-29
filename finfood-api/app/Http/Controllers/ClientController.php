@@ -24,15 +24,16 @@ class ClientController extends Controller
 	 * Store a newly created resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request) 
+	 * @return \Illuminate\Http\JsonResponse
+     */
+	public function store(Request $request)
     {
 		$id = Auth::user()->id;
 		$request->merge([
 				'user_id' => $id
 			]);
-		return Client::create($request->all());
+        return response()->json(Client::create($request->all()), 201);
+
 	}
 
 	public function show(Client $client)
@@ -56,7 +57,7 @@ class ClientController extends Controller
         $id = Auth::user()->id;
         if (!($client->user_id === $id)) {
             return response('404 Not Found', 404);
-        } 
+        }
 		$request->merge([
 				'user_id' => $id
 			]);
@@ -74,7 +75,7 @@ class ClientController extends Controller
     {
         if (!($client->user_id === Auth::user()->id)) {
             return response('404 Not Found', 404);
-        } 
+        }
         $client->delete();
 		return response(null, 204);
 	}

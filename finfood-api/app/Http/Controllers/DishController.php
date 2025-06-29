@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Dish;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class DishController extends Controller
 {
@@ -22,8 +23,8 @@ class DishController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -31,7 +32,7 @@ class DishController extends Controller
         $request->merge([
                 'user_id' => $id
             ]);
-        return Dish::create($request->all());
+        return response()->json(Dish::create($request->all()), 201);
     }
 
     public function update(Request $request, Dish $dish)
@@ -39,7 +40,7 @@ class DishController extends Controller
         $id = Auth::user()->id;
         if (!($dish->user_id === $id)) {
             return response('404 Not Found', 404);
-        } 
+        }
         $request->merge([
                 'user_id' => $id
             ]);
@@ -57,7 +58,7 @@ class DishController extends Controller
     {
         if (!($dish->user_id === Auth::user()->id)) {
             return response('404 Not Found', 404);
-        } 
+        }
         $dish->delete();
         return response(null, 204);
     }
