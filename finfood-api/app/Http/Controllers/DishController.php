@@ -2,23 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dish;
-use Illuminate\Http\Request;
+use App\Dish;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DishController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        return Dish::where('user_id', '=', 1)
+        return Dish::where('user_id', '=', Auth::user()->id)
             ->get();
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function store(Request $request)
     {
-        $id = 1;
+        $id = Auth::user()->id;
         $request->merge([
                 'user_id' => $id
             ]);
@@ -27,7 +37,7 @@ class DishController extends Controller
 
     public function update(Request $request, Dish $dish)
     {
-        $id = 1;
+        $id = Auth::user()->id;
         if (!($dish->user_id === $id)) {
             return response('404 Not Found', 404);
         }
@@ -38,9 +48,15 @@ class DishController extends Controller
         return $dish;
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Dish  $dish
+     * @return \Illuminate\Http\Response
+     */
     public function destroy(Dish $dish)
     {
-        if (!($dish->user_id === 1)) {
+        if (!($dish->user_id === Auth::user()->id)) {
             return response('404 Not Found', 404);
         }
         $dish->delete();
