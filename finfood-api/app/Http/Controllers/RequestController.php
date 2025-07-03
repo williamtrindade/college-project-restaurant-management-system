@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Request as ClientRequest;
-use App\Dish;
-use Carbon\Carbon;
+use App\Models\Dish;
+use App\Models\Request as ClientRequest;
 use Illuminate\Http\Request;
-use Auth;
 
 class RequestController extends Controller
 {
     public function index()
     {
-        return ClientRequest::where('user_id', '=', Auth::user()->id)->get()
+        return ClientRequest::where('user_id', '=', 1)->get()
             ->load('dishes', 'client');
     }
 
     public function store(Request $request)
     {
-        $id = Auth::user()->id;
+        $id = 1;
         $clientRequest = new ClientRequest();
         $clientRequest->user_id = $id;
         $clientRequest->client_id = $request['client_id'];
@@ -37,12 +35,6 @@ class RequestController extends Controller
         return $total;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(ClientRequest $clientRequest)
     {
         $clientRequest->delete();

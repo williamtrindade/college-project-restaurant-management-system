@@ -2,33 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Client;
-use App\User;
-use Auth;
+use App\Models\Client;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
 	public function index()
     {
-		return Client::where('user_id', '=', Auth::user()->id)
-			->get();
+		return Client::where('user_id', '=', 1)->get();
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\JsonResponse
+	 * @param Request $request
+	 * @return JsonResponse
      */
-	public function store(Request $request)
+	public function store(Request $request): JsonResponse
     {
-		$id = Auth::user()->id;
+        $id = 1;
+		// @todo $id = Auth::user()->id;
 		$request->merge([
 				'user_id' => $id
 			]);
@@ -38,23 +36,24 @@ class ClientController extends Controller
 
 	public function show(Client $client)
     {
-        $id = Auth::user()->id;
+        $id = 1;
+
         if (!($client->user_id === $id)) {
             return response('404 Not Found', 404);
         }
         return $client;
     }
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \App\Client  $client
-	 * @return \Illuminate\Http\Response
-	 */
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param Client $client
+     * @return Client|ResponseFactory|Application|Response|object
+     */
 	public function update(Request $request, Client $client)
     {
-        $id = Auth::user()->id;
+        $id = 1;
         if (!($client->user_id === $id)) {
             return response('404 Not Found', 404);
         }
@@ -65,15 +64,15 @@ class ClientController extends Controller
 		return $client;
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  \App\Client  $client
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy(Client $client)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Client $client
+     * @return Response
+     */
+	public function destroy(Client $client): Response
     {
-        if (!($client->user_id === Auth::user()->id)) {
+        if (!($client->user_id === 1)) {
             return response('404 Not Found', 404);
         }
         $client->delete();
